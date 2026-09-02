@@ -1,0 +1,7 @@
+% ENSEMBLES
+X = { a b }
+V = { L }
+
+% GRAMMAIRE
+L -> # | a | a L a | b | b L b
+

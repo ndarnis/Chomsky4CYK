@@ -1,0 +1,6 @@
+% SETS
+X = { a b }
+V = { S }
+
+% GRAMMAR
+S -> a S b S | a | b | #

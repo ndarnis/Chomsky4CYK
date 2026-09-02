@@ -1,0 +1,11 @@
+; EXAMPLE1
+; Simple ETF Grammar
+
+% SETS
+X = { + * n ) ( }
+V = { Expression Term Factor }
+
+% GRAMMAR
+Expression -> Expression + Term | Term
+Term -> Term * Factor | Factor
+Factor -> ( Expression ) | n

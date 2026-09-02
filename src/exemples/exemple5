@@ -1,0 +1,7 @@
+% SETS
+X = { a b }
+V = { S A }
+
+% GRAMMAR
+S -> A A | A S | b
+A -> S A | A S | a

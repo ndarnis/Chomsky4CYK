@@ -1,0 +1,12 @@
+; Langage des parenthèses
+; Exemples:
+; (()()((())())) appartient au langage
+; (()()(())())) n'appartient PAS au langage
+
+
+% ENSEMBLES
+X = { ( ) }
+V = { S }
+
+% GRAMMAIRE
+S -> ( S ) S | #

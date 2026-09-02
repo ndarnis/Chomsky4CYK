@@ -1,0 +1,11 @@
+; Langage des parenthèses
+; Exemples:
+; aababaaabbabbb appartient au langage
+; aababaabbabbb n'appartient PAS au langage
+
+% ENSEMBLES
+X = { a b }
+V = { S }
+
+% GRAMMAIRE
+S -> a S b S | #

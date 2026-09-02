@@ -1,0 +1,11 @@
+% SETS
+X = { 0 1 2 3 4 5 6 7 8 9 - / + * n ) ( }
+V = { Expression Term Factor Digit Number }
+
+% GRAMMAR
+Expression -> Expression + Term | Expression - Term | Term
+Term -> Term * Factor | Term / Factor | Factor
+Factor -> ( Expression ) | Number
+Number -> # | Number Digit
+Digit -> 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+

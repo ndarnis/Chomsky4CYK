@@ -1,0 +1,5 @@
+*.o
+*~
+src/*.o
+src/*~
+src/examples/*~
