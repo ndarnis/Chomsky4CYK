@@ -40,9 +40,9 @@ typedef enum
 } langage;
 
 /* Global variables */
-gdsl_list_t X; /* Terminal symbols */
-gdsl_list_t V; /* No-terminal symbols (i.e. variables) */
-gdsl_list_t G; /* Rules (ie. grammar) */
+gdsl_list_t X; /* Terminal symbols [TS] */
+gdsl_list_t V; /* No-terminal symbols (i.e. variables) [NTS] */
+gdsl_list_t G; /* Rules (ie. grammar) [R] */
 
 static bool verbose = false;
 
@@ -230,7 +230,7 @@ int main (int argc, char* argv[])
     exit (EXIT_SUCCESS);
 }
 
-/****************************************************************************/
+/******************************************************************************/
 
 static void grammar_write (FILE* file)
 {
@@ -278,9 +278,9 @@ static void build_requirements_table (void)
     symbol* X;
     rule* P;
     
-    /**********************************************************************************/
-    /* RequierementsTable & usable_objects initialisations                            */
-    /**********************************************************************************/
+    /**************************************************************************/
+    /* RequierementsTable & usable_objects initialisations                    */
+    /**************************************************************************/
     
     grammar_number ();
     variables_number ();
@@ -301,7 +301,7 @@ static void build_requirements_table (void)
     cv = gdsl_list_cursor_alloc (V);
     for (i = 0, gdsl_list_cursor_move_to_head (cv); (X = (symbol*) gdsl_list_cursor_get_content (cv)); gdsl_list_cursor_step_forward (cv))
     {
-	/* WARNING: HERE, WE MUST ABSOLUTELY HAVE i == champ num de gdsl_list_cursor_get_content (cursor) */
+	/* WARNING: HERE, WE MUST ABSOLUTELY HAVE i == num field of gdsl_list_cursor_get_content (cursor) */
 	assert (++i == symbol_get_num (X)); 
 	RequierementsTable[i] = 1; 
     }
@@ -329,9 +329,9 @@ static void build_requirements_table (void)
     gdsl_list_dump (usable_objects, NULL, stdout, NULL);
 #endif
     
-    /**********************************************************************************/
-    /* RequierementsTable building algorithm                                          */
-    /**********************************************************************************/
+    /**************************************************************************/
+    /* RequierementsTable building algorithm                                  */
+    /**************************************************************************/
     
     while (!gdsl_list_is_empty (usable_objects))
     {
@@ -394,9 +394,9 @@ static void build_requirements_table (void)
 	}
     }
     
-    /**********************************************************************************/
-    /* END                                                                            */
-    /**********************************************************************************/
+    /**************************************************************************/
+    /* END                                                                    */
+    /**************************************************************************/
     
     destroy_dependency_table ();
     gdsl_list_free (usable_objects);
@@ -522,7 +522,7 @@ static void build_chomsky_normal_form (FILE* out)
 }
 
 /******************************************************************************/
-/* STEP 1: Union removal                                                      */
+/* STEP 1: Union removal.                                                     */
 /******************************************************************************/
 
 static void Step1 (void)
@@ -579,9 +579,10 @@ static void Step1 (void)
 #endif
 }
 
-/*************************************************************************************************************************/
-/* STEP 2: Transformation du membre droit de chaque règle en une lettre ou en une concaténation de non terminaux         */
-/*************************************************************************************************************************/
+/******************************************************************************/
+/* STEP 2: Modification of each rule's right member                           */
+/*         to a letter or a concatenation of [NTS].                           */
+/******************************************************************************/
 
 static void Step2 (void)
 {
@@ -637,9 +638,9 @@ static void Step2 (void)
 #endif
 }
 
-/*************************************************************************************************************************/
-/* STEP 3: Removing of too-long right members (who have length > 2)                                                      */
-/*************************************************************************************************************************/
+/******************************************************************************/
+/* STEP 3: Removing too-long right members (who have length > 2).             */
+/******************************************************************************/
 
 static void Step3 (void)
 {
@@ -697,9 +698,9 @@ static void Step3 (void)
   #endif
 }
 
-/*************************************************************************************************************************/
-/* STEP 4: elimination of the maximum number of empty words.                                                             */
-/*************************************************************************************************************************/
+/******************************************************************************/
+/* STEP 4: elimination of the maximum number of empty words.                  */
+/******************************************************************************/
 
 static void Step4 (void)
 {
@@ -710,7 +711,7 @@ static void Step4 (void)
     gdsl_list_cursor_t cv = NULL;
     gdsl_list_cursor_t cg = NULL;
     
-    /* a) Ajout des nouveaux symboles non-terminaux X~ et X# à V et introduction des nouvelles règles X -> X~ et X -> X# dans G */
+    /* a) Adding new non-terminals symbols X~ and X# to V and adding new rules X -> X~ and X -> X# to G */
     cv = gdsl_list_cursor_alloc (V);
     cg = gdsl_list_cursor_alloc (G);
     
@@ -844,7 +845,7 @@ static void Step4 (void)
 	    
 	    vc0 = (symbol *) gdsl_list_search (V, strings_compare, (void *) mot2);
 	    
-	    /* Insertion des 3 NT dans G avec X qui donne X~ X~ X# */
+	    /* Inserting of 3 [NTS] into G with X that leads to X~ X~ X# */
 	    cg2 = (rule *) gdsl_list_cursor_insert_after (cg, (void *) vc); 
 	    actu2 = rule_get_production (cg2);
 	    
@@ -928,7 +929,7 @@ static void Step4 (void)
 	    continue;
 	}
 
-	/* Symbol s IS an initial variabl, so it must be removed */
+	/* Symbol s IS an initial variable, so it must be removed */
 	gdsl_list_cursor_delete (cg); /* cf. NOTE 1 */
     }
 
@@ -1094,9 +1095,9 @@ static void Step4 (void)
 #endif
 }
 
-/*************************************************************************************************************************/
-/* STEP 5: Removing unitary rules                                                                                        */
-/*************************************************************************************************************************/
+/******************************************************************************/
+/* STEP 5: Removing unitary rules.                                            */
+/******************************************************************************/
 
 static void Step5 (void)
 {
@@ -1179,7 +1180,7 @@ static void Step5 (void)
 	      if (leads_to (Z, X0)) gdsl_list_insert_tail (tmp2, (void*) X0 );
 	    }
 
-	    /* Produit cartésien des listes tmp0, tmp1, tmp2 */
+	    /* Cartesian product of lists tmp0, tmp1, tmp2 */
 	    ct0 = gdsl_list_cursor_alloc (tmp0);
 	    for (gdsl_list_cursor_move_to_head (ct0); gdsl_list_cursor_get_content (ct0); gdsl_list_cursor_step_forward (ct0))
 	    {
@@ -1430,7 +1431,7 @@ static void transitive_closure (void)
 	}
     }
     
-    /* Construction des matrices M et T à partir de la grammaire G */
+    /* Build matrix M & T from grammar G */
     cg = gdsl_list_cursor_alloc (G);
     for (gdsl_list_cursor_move_to_head (cg); gdsl_list_cursor_get_content (cg); gdsl_list_cursor_step_forward (cg))
     {
@@ -1456,7 +1457,7 @@ static void transitive_closure (void)
     }
     gdsl_list_cursor_free (cg);
     
-    /* Fermeture transitive (Warshall) */
+    /* Transitive closure (Warshall) */
     for (i = 1; i <= m; i++)
     {
 	for (j = 1; j <= m; j++)
@@ -1549,6 +1550,7 @@ static void usage (void)
     printf ("       --version: display version information.\n");
     exit (EXIT_SUCCESS);
 }
+
 
 /** EMACS **
  * Local variables:
